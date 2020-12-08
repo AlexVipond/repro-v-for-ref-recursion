@@ -1,27 +1,26 @@
 <template>
-  <div>
-    <div
-      v-for="(div, index) in divs.values"
-      :key="index"
-      :ref="divs.ref"
-    />
+  <div v-for="(item, i) in list" :ref="el => { if (el) divs = [...divs, el] }">
+    {{ item }}
   </div>
 </template>
 
 <script>
-import { ref } from 'vue'
+  import { ref, reactive, onBeforeUpdate } from 'vue'
 
-const values = [0, 1, 2]
+  export default {
+    setup() {
+      const list = reactive([1, 2, 3])
+      const divs = ref([])
 
-export default {
-  setup () {
-    const divEls = ref([]),
-          divs = {
-            ref: el => (divEls.value = [...divEls.value, el]),
-            values,
-          }
+      // make sure to reset the refs before each update
+      onBeforeUpdate(() => {
+        divs.value = []
+      })
 
-    return { divs }
+      return {
+        list,
+        divs
+      }
+    }
   }
-}
 </script>
